@@ -311,6 +311,9 @@ function stab(freqs, at, bus) {
 
 function schedule() {
   const c = ac(), bus = bgmBusNode();
+  // ถ้าจังหวะถัดไปตกหลังเวลาจริงไปแล้ว (เช่นตอน AudioContext เพิ่งถูกปลุก)
+  // ต้องดึงกลับมาเริ่มที่ปัจจุบัน ไม่งั้นจะไล่ยิงโน้ตในอดีตรัว ๆ แล้วเงียบทั้งเพลง
+  if (nextAt < c.currentTime) nextAt = c.currentTime + .05;
   while (nextAt < c.currentTime + .3) {
     const s   = step % LEN;
     const bar = Math.floor(s / BAR);
@@ -352,8 +355,14 @@ function startBgm() {
     return;
   }
   if (bgmTimer) return;
+  const c = ac();
+  // รอให้ AudioContext ตื่นจริงก่อนค่อยเริ่มนับจังหวะ
+  if (c.state === 'suspended') {
+    c.resume().then(() => { if (on.bgm && !bgmTimer) startBgm(); }).catch(() => {});
+    return;
+  }
   step = 0;
-  nextAt = ac().currentTime + .1;
+  nextAt = c.currentTime + .1;
   schedule();
 }
 function stopBgm() {
