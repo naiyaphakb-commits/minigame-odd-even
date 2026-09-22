@@ -1,0 +1,576 @@
+/* ============================================================
+   minigame odd-even — tokens ตรงจาก Figma variables / styles
+   ============================================================ */
+:root{
+  /* color-02 */
+  --bg-canvas:#101010;
+  --bg-surface:#18191b;
+  --bg-default:#222325;
+  --bg-tertiary:#2c2d30;
+  --bg-brand:#ffc800;
+  --bg-info:#0284c7;
+  --bg-success-strong:#357738;
+  --bg-success-alpha-20:#4eaf5133;
+  --alpha-black-60:rgba(36,36,40,.6);
+  --opacity-black-60:rgba(23,23,23,.6);
+  --alpha-brand-20:rgba(255,214,0,.2);
+  --opacity-brand-40:rgba(255,200,0,.4);
+
+  --border-default:#2c2d30;
+  --border-secondary:#45464a;
+  --border-brand:#ffc800;
+
+  --text-primary:#fafafa;
+  --text-secondary:#7a7c85;
+  --text-default:#4e5055;
+  --text-inverse:#101010;
+  --text-brand:#ffc800;
+  --text-error:#f44434;
+  --text-info:#0ea5e9;
+  --text-success:#4eaf51;
+  --text-placeholder:#a3a3a3;
+  --text-muted:#94969f;
+
+  --marker-even:#5aaf20;   /* ฝั่งคู่ = เขียว ตาม component bet choice */
+  --marker-odd:#f43220;
+
+  /* typography — mobile scale */
+  --font:'IBM Plex Sans Thai',system-ui,sans-serif;
+  --fs-2xs:10px; --lh-14:14px;
+  --fs-xs:12px;  --lh-18:18px;
+  --fs-sm:14px;  --lh-20:20px;
+  --fs-base:16px;--lh-24:24px;
+  --fs-xl:20px;
+
+  /* space / radius */
+  --sp-2xs:4px; --sp-xs:8px; --sp-0:16px;
+  --r-8:8px; --r-round:9999px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{background:#000;font-family:var(--font)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block}
+ol,ul{list-style:none}
+
+.app{
+  position:relative;width:100%;max-width:430px;min-height:932px;margin:0 auto;
+  background:var(--bg-canvas);overflow:hidden;
+}
+
+/* ══════════ Header ══════════ */
+.hdr{
+  position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;
+  height:64px;padding:var(--sp-xs) var(--sp-0);
+  background:var(--alpha-black-60);border-bottom:1px solid var(--border-default);
+}
+.hdr__logo{width:114px;height:48px;object-fit:contain}
+.hdr__right{display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-xs);height:32px}
+
+.balance{
+  display:flex;align-items:center;justify-content:space-between;
+  width:122px;height:100%;padding:var(--sp-2xs) var(--sp-0) var(--sp-2xs) var(--sp-2xs);
+  background:var(--bg-canvas);border-radius:var(--r-round);overflow:hidden;
+}
+.balance__icon{display:block;width:24px;height:24px;padding:1.875px}
+.balance__icon img{width:100%;height:100%}
+.balance__value{display:flex;align-items:baseline;gap:1px;color:var(--text-brand);white-space:nowrap}
+.balance__value>span:first-child{font-size:var(--fs-base);line-height:var(--lh-24);font-weight:500}
+.balance__dec{font-size:var(--fs-2xs);line-height:var(--lh-14);font-weight:700}
+
+.icon-btn{
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;
+  background:var(--bg-surface);border:1px solid var(--border-secondary);border-radius:20px;
+}
+.icon-btn__img{width:24px;height:24px}
+.icon-btn__glyph{display:block;width:18px;height:18px}
+
+/* ══════════ screens ══════════ */
+.screen{display:none}
+.screen.is-active{display:block}
+
+/* ── 1. loading ── */
+.screen--loading{position:relative;height:868px}
+.loading__bg{width:100%;height:100%;object-fit:cover}
+.loading__foot{position:absolute;left:0;right:0;bottom:48px;display:flex;justify-content:center}
+.loadbar{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:332px;padding:12px var(--sp-0);border-radius:var(--r-8);
+  background:rgba(23,23,23,.8);overflow:hidden;
+}
+.loadbar__row{display:flex;align-items:center;justify-content:space-between;width:min(300px,78vw)}
+.loadbar__label{font-size:var(--fs-2xs);line-height:var(--lh-14);color:var(--text-primary)}
+.loadbar__pct{font-size:var(--fs-2xs);line-height:var(--lh-14);font-weight:500;color:var(--text-brand)}
+.loadbar__track{position:relative;width:min(300px,78vw);height:6px;margin-top:9px;
+  background:rgba(255,255,255,.28);border-radius:3px}
+.loadbar__fill{width:0;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,#ac3327 21.264%,#ecb00a 51.437%,#eddfb8 124.14%);
+  transition:width .12s linear}
+.loadbar__mascot{
+  position:absolute;top:50%;left:0;width:24px;height:24px;margin:-12px 0 0 -12px;
+  filter:drop-shadow(0 0 14px rgba(255,200,0,.5));transition:left .12s linear;
+}
+.loadbar__mascot img{width:100%;height:100%;object-fit:contain}
+.loading__start{width:205px;height:42px}
+
+.btn-brand{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg-brand);color:var(--text-inverse);border-radius:var(--r-8);
+  font-size:var(--fs-base);line-height:var(--lh-24);font-weight:700;
+  box-shadow:0 0 12px rgba(255,200,0,.35);
+}
+.btn-brand:active{transform:translateY(1px)}
+
+/* ── game ── */
+.frame{
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-0);
+  width:calc(100% - 32px);max-width:398px;margin:16px auto 0;padding:12px var(--sp-0);
+  background:var(--bg-surface);border-radius:16px;
+}
+
+/* fairness panel */
+.fair{
+  position:relative;z-index:20;
+  width:100%;height:62px;padding:var(--sp-xs);background:var(--bg-tertiary);
+  border:1px solid var(--border-default);border-radius:var(--r-8);
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));
+}
+/* status=success — ออกผลแล้ว เงาเข้มขึ้นตาม component (พื้น/ขอบ #2C2D30 เท่าเดิม)
+   ตอนนี้โค้ดยาวเต็มจึงต้องปล่อยให้สูงตามเนื้อหา ไม่งั้นบรรทัดที่สองจะถูกตัด */
+.fair.is-done{height:auto;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+.fair.is-open{border-radius:var(--r-8) var(--r-8) 0 0}
+.fair__head{display:flex;align-items:center;gap:var(--sp-xs);width:100%;margin-bottom:var(--sp-2xs);
+  text-align:left;cursor:pointer}
+.fair__title{display:flex;flex:1 0 0;min-width:0;align-items:center;gap:var(--sp-xs);
+  font-size:var(--fs-2xs);line-height:var(--lh-14);white-space:nowrap}
+.fair__key{font-weight:700;color:var(--text-brand)}
+.fair__hint{color:var(--text-muted)}
+.pill{display:flex;align-items:center;gap:5px;padding:2px var(--sp-xs);border-radius:var(--r-round);
+  font-size:var(--fs-2xs);line-height:var(--lh-14);font-weight:600;white-space:nowrap}
+.pill--wait{background:var(--alpha-brand-20);color:var(--text-brand)}
+.pill--done{background:var(--bg-success-alpha-20);color:#7fd382}
+.pill__dot{width:6px;height:6px}
+.pill--done .pill__dot{filter:hue-rotate(75deg) saturate(.75)}
+.fair__chevron{width:16px;height:16px;transition:transform .2s ease}
+.fair__head[aria-expanded="true"] .fair__chevron{transform:scaleY(-1)}
+/* state=expended — ลอยทับเวทีด้านล่าง ไม่ดันเลย์เอาต์ */
+.fair__body{
+  position:absolute;left:-1px;right:-1px;top:100%;height:60px;
+  padding:var(--sp-xs);background:var(--bg-tertiary);
+  border:1px solid var(--border-default);border-top:1px solid var(--border-secondary);
+  border-radius:0 0 var(--r-8) var(--r-8);
+  box-shadow:0 8px 16px rgba(0,0,0,.5);
+}
+.fair__label{display:flex;align-items:center;gap:var(--sp-xs);margin-bottom:var(--sp-2xs);
+  font-size:var(--fs-2xs);line-height:var(--lh-14);white-space:nowrap}
+.fair__value{display:flex;align-items:center;gap:var(--sp-xs)}
+/* โค้ดต้องอ่านได้ครบ ไม่ตัดด้วย … — ยาวเกินบรรทัดก็ตัดขึ้นบรรทัดใหม่
+   ที่ 430px (เฟรมออกแบบ) โค้ด 47 ตัวอยู่บรรทัดเดียวพอดีที่ฟอนต์ 10px
+   จอแคบกว่านั้นย่อฟอนต์ลงเล็กน้อยเพื่อคงให้อยู่บรรทัดเดียว */
+.fair__seed{flex:1 0 0;min-width:0;font-family:'IBM Plex Mono',monospace;font-size:var(--fs-2xs);
+  line-height:15px;color:var(--text-placeholder);word-break:break-all}
+@media (max-width:429px){ .fair__seed{font-size:9px} }
+@media (max-width:389px){ .fair__seed{font-size:8px} }
+/* เครื่องหมายผลกลางโค้ด (-O- / -E-) เน้นสีฟ้าให้ต่างจากตัวโค้ด */
+.fair__mark{color:var(--text-info);font-weight:700}
+.fair__copy{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:24px;height:24px;
+  opacity:.5;background:var(--bg-canvas);border:1px solid var(--border-default);border-radius:6px;
+  transition:opacity .15s ease}
+.fair__copy:hover{opacity:1}
+.fair__copy.is-done{opacity:1;border-color:var(--text-success)}
+.fair__copy img{width:10px;height:10px}
+
+/* stage */
+.stage{
+  position:relative;width:100%;aspect-ratio:366/310;border-radius:var(--r-8);
+  box-shadow:0 3px 6px rgba(0,0,0,.25);background:#0b0d12;
+}
+.stage__layer{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;
+  border-radius:var(--r-8);overflow:hidden;object-fit:cover;transition:opacity .25s ease}
+.stage__layer.is-on{opacity:1}
+
+/* win / lose popup — 1.5 วิ */
+.stage__pop{position:absolute;left:0;top:50%;width:100%;aspect-ratio:1;margin:-50% 0 0;
+  opacity:0;pointer-events:none;transition:opacity .2s ease}
+.stage__pop.is-on{opacity:1;animation:popIn .35s cubic-bezier(.2,1.3,.4,1)}
+@keyframes popIn{from{transform:scale(.86)}to{transform:scale(1)}}
+.stage__pop>img{width:100%;height:100%;object-fit:contain}
+.pop__amount{
+  position:absolute;left:50%;top:68.3%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;height:30px;min-width:104px;padding:0 14px;
+  background:#131313;border:1.5px solid rgba(255,200,0,.55);border-radius:var(--r-round);
+  box-shadow:0 0 10px rgba(0,0,0,.6);
+}
+.pop__amount img{width:20px;height:20px}
+.pop__amount b{font-size:18px;line-height:1;font-weight:700;color:var(--text-brand);white-space:nowrap}
+.stage__pop.is-lose .pop__amount b{color:var(--text-brand)}
+
+/* inline error · 1.5 วิ */
+.inline-error{
+  position:absolute;left:50%;top:134px;transform:translateX(-50%);
+  display:none;align-items:center;gap:var(--sp-xs);height:42px;padding:9px 15px;
+  background:rgba(23,23,23,.85);border:1px solid var(--text-error);border-radius:var(--r-8);
+  white-space:nowrap;
+}
+.inline-error.is-on{display:flex;animation:toastIn .2s ease}
+@keyframes toastIn{from{transform:translateX(-50%) scale(.9);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+.inline-error img{width:24px;height:24px}
+.inline-error span{font-size:var(--fs-sm);line-height:var(--lh-20);font-weight:500;color:var(--text-error)}
+
+/* hint pill */
+/* นับถอยหลังเวลาเดิมพัน — มุมขวาบนของเวที */
+.timer{
+  position:absolute;right:8px;top:8px;z-index:3;
+  display:flex;align-items:center;gap:var(--sp-2xs);height:28px;padding:0 10px;
+  background:var(--opacity-black-60);border:1px solid var(--border-default);
+  border-radius:var(--r-round);
+  font-size:var(--fs-sm);line-height:var(--lh-20);font-weight:700;color:var(--text-primary);
+  font-variant-numeric:tabular-nums;
+}
+.timer__dot{width:8px;height:8px;border-radius:50%;background:var(--bg-brand)}
+.timer.is-urgent{border-color:var(--text-error);color:var(--text-error);animation:timerPulse 1s ease-in-out infinite}
+.timer.is-urgent .timer__dot{background:var(--text-error)}
+@keyframes timerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+
+.hint{
+  position:absolute;left:50%;bottom:9px;transform:translateX(-50%);
+  display:flex;align-items:center;height:32px;padding:var(--sp-2xs) var(--sp-0);
+  background:var(--bg-surface);border-radius:var(--r-round);white-space:nowrap;
+  font-size:var(--fs-sm);line-height:var(--lh-20);font-weight:600;color:var(--text-secondary);
+  transition:color .2s ease;
+}
+.hint.is-result{color:var(--text-primary)}
+
+/* ══════════ tab bet ══════════ */
+/* อยู่ในกรอบ .frame ที่มี padding 16px อยู่แล้ว จึงเว้นเฉพาะบน-ล่าง
+   ความกว้างใช้งานจริงจึงเท่าเดิม 366px ที่จอ 430 */
+.tabbet{display:flex;flex-direction:column;align-items:center;gap:var(--sp-xs);
+  width:100%;padding:12px 0;border-radius:16px}
+
+/* bar chip */
+.barchip{display:flex;align-items:center;justify-content:center;gap:var(--sp-2xs);width:100%;height:60px}
+.chip{position:relative;flex:0 0 auto;transition:transform .15s ease}
+.chip img{width:100%;height:100%}
+/* ไฟล์ Active เป็นภาพ 72px ที่มีตัวชิพ 50px อยู่กลาง (69%) — ขยาย 144% ให้ตัวชิพเต็มกรอบพอดี */
+.chip--side img,.chip--value.is-active img,.betcard__chip img{
+  width:144%;height:144%;margin:-22%}
+.chip--side{width:44px;height:44px;border-radius:50%;
+  box-shadow:0 0 5.5px var(--opacity-brand-40),0 3.3px 9.57px rgba(0,0,0,.25)}
+.chip--side.is-active{width:50px;height:50px;
+  box-shadow:0 0 6.25px var(--opacity-brand-40),0 3.75px 10.875px rgba(0,0,0,.25)}
+
+.barchip__track{
+  position:relative;flex:1 1 0;min-width:0;height:60px;
+  background:var(--bg-default);border:1px solid #bebebe;border-radius:999px;overflow:hidden;
+  box-shadow:0 4px 4px rgba(0,0,0,.25),inset 0 4px 4px rgba(0,0,0,.25);
+}
+.barchip__rail{
+  display:flex;align-items:center;gap:var(--sp-xs);height:100%;
+  /* เลื่อนได้เฉพาะซ้าย-ขวา ปัดขึ้น-ลงให้หน้าเลื่อนแทน ไม่ให้รางขยับ */
+  overflow-x:auto;overflow-y:hidden;touch-action:pan-x;overscroll-behavior-x:contain;
+  scroll-behavior:smooth;scrollbar-width:none;
+}
+.barchip__rail::-webkit-scrollbar{display:none}
+.chip--value{flex:0 0 auto;width:40px;height:40px}
+.chip--value.is-active{width:50px;height:50px;border-radius:50%;
+  box-shadow:0 0 6.25px var(--opacity-brand-40),0 3.75px 10.875px rgba(0,0,0,.25)}
+.chip:active{transform:scale(.94)}
+.barchip__nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;width:30px;height:60px;
+  background:var(--opacity-black-60);
+}
+.barchip__nav--prev{left:0}
+.barchip__nav--next{right:0}
+.barchip__nav img{width:16px;height:16px}
+.barchip__nav--prev img{transform:rotate(90deg)}
+.barchip__nav--next img{transform:rotate(-90deg)}
+
+/* bet bar — component set "bet choice" (default / hover / active / bet win / bet lose / result) */
+.betbar{display:flex;gap:12px;width:100%}
+.betcard{
+  box-sizing:border-box;position:relative;isolation:isolate;
+  display:flex;flex-direction:row;align-items:center;gap:var(--sp-xs);
+  flex:1 0 0;min-width:0;height:60px;padding:var(--sp-xs) var(--sp-0);
+  border:2px solid transparent;border-radius:var(--r-8);text-align:left;
+  transition:background .15s ease,border-color .15s ease,opacity .15s ease;
+}
+.betcard--even{background:linear-gradient(180deg,#5AAF20 11.74%,#357738 125.8%)}
+.betcard--odd{border-color:#A12828;
+  background:linear-gradient(180deg,#F43220 -10.16%,#8E281E 117.19%)}
+
+/* state=hover */
+.betcard--even:hover{background:linear-gradient(0deg,rgba(255,255,255,.1),rgba(255,255,255,.1)),
+  linear-gradient(180deg,#5AAF20 11.74%,#357738 125.8%)}
+.betcard--odd:hover{background:linear-gradient(0deg,rgba(255,255,255,.1),rgba(255,255,255,.1)),
+  linear-gradient(180deg,#F43220 -10.16%,#8E281E 117.19%)}
+.betcard--odd:not(.is-picked):not(.is-result):hover{border-color:transparent}
+
+/* state=active / bet win / bet lose / result */
+.betcard--even.is-picked{border-color:#357738}
+.betcard--odd.is-picked{border-color:#A12828}
+.betcard.is-lose{opacity:.6}
+.betcard.is-win,.betcard.is-result{border-color:var(--text-primary)}
+
+.betcard__body{display:flex;flex:1 0 0;min-width:0;flex-direction:column;
+  justify-content:center;align-items:flex-start;z-index:0;color:var(--text-primary)}
+.betcard__title{display:flex;align-items:center;align-self:stretch;
+  font-size:var(--fs-xl);line-height:var(--lh-24);font-weight:700}
+.betcard__sub{align-self:stretch;font-size:var(--fs-xs);line-height:var(--lh-18);font-weight:500}
+
+/* mark · "คุณเลือก" */
+.betcard__tag{
+  position:absolute;top:-2px;right:-2px;z-index:1;display:none;
+  align-items:flex-start;width:54px;height:18px;padding:2px var(--sp-xs);
+  border-radius:0 var(--r-8) 0 var(--r-8);box-shadow:0 1px 3.8px rgba(0,0,0,.35);
+  font-size:var(--fs-2xs);line-height:var(--lh-14);font-weight:700;
+}
+.betcard--even .betcard__tag{background:#357738;color:#F1F8EC}
+.betcard--odd .betcard__tag{background:#A12828;color:var(--text-primary)}
+.betcard.is-win .betcard__tag{background:#fff;color:var(--text-success)}
+
+/* ชิพที่วาง — วางซ้อนกันแนวนอน ใบใหม่อยู่บนสุด */
+.betcard__chip{
+  position:absolute;top:20px;z-index:2;display:none;align-items:flex-end;
+  filter:drop-shadow(0 0 3.6px var(--opacity-brand-40)) drop-shadow(0 2.16px 6.264px rgba(0,0,0,.25));
+}
+.betcard__chip-item{position:relative;flex:0 0 auto;width:32px;height:32px;margin-left:-20px}
+.betcard__chip-item.is-new{animation:chipDrop .22s cubic-bezier(.2,1.4,.4,1)}
+.betcard__chip-item:first-child{margin-left:0}
+@keyframes chipDrop{from{transform:translateY(-14px) scale(.7);opacity:0}
+                    to{transform:none;opacity:1}}
+/* เหรียญรางวัลไหลเข้ายอดเงิน */
+.coin-fly{position:fixed;z-index:210;width:28px;height:28px;pointer-events:none;
+  filter:drop-shadow(0 0 5px var(--opacity-brand-40)) drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.coin-fly img{width:100%;height:100%}
+/* ยอดเงินเด้งรับทุกครั้งที่เหรียญถึง */
+.balance.is-tick{animation:balTick .22s ease-out}
+@keyframes balTick{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+/* ชิพที่กำลังไหล — ตัวโคลนลอยเหนือทุกอย่าง ตัวจริงบนการ์ดซ่อนไว้ก่อน */
+.betcard__chip-item.is-flying{visibility:hidden}
+.chip-fly{position:fixed;z-index:200;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 3.6px var(--opacity-brand-40)) drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.chip-fly img{width:144%;height:144%;margin:-22%}
+
+.betcard--even .betcard__chip{right:2px}
+.betcard--odd .betcard__chip{right:6px}
+.betcard.is-picked .betcard__tag,
+.betcard.is-picked .betcard__chip{display:flex}
+/* ถ้าวางเกินที่แสดงไหว ขึ้นตัวเลขบอกจำนวนใบที่เหลือ */
+.betcard__chip-more{position:relative;z-index:1;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  height:18px;margin-right:-6px;padding:0 6px;border-radius:var(--r-round);
+  background:var(--bg-canvas);border:1px solid var(--border-secondary);
+  font-size:var(--fs-2xs);line-height:var(--lh-14);font-weight:700;color:var(--text-primary)}
+
+/* range labels */
+.ranges{display:flex;justify-content:space-between;width:100%;
+  font-size:var(--fs-xs);line-height:var(--lh-18);color:var(--text-secondary)}
+.ranges__item{display:flex;align-items:center;gap:var(--sp-2xs);white-space:nowrap}
+.ranges__item b{font-weight:400}
+
+/* actions */
+.actions{display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);width:100%}
+.actions__group{display:flex;align-items:center;gap:var(--sp-xs)}
+.act{display:flex;align-items:center;justify-content:center;gap:var(--sp-2xs);height:36px;
+  font-size:var(--fs-sm);line-height:var(--lh-20);font-weight:500;white-space:nowrap;
+  transition:opacity .15s ease}
+.act img{width:24px;height:24px}
+.act--cancel,.act--repeat{padding:0 var(--sp-xs);background:var(--bg-default);border-radius:6px}
+.act--cancel{color:var(--text-error)}
+.act--repeat{color:var(--text-info)}
+.act--confirm{flex:1 0 0;min-width:0;padding:0 var(--sp-0);background:var(--bg-success-strong);
+  border-radius:var(--r-8);color:var(--text-primary);font-weight:600}
+.act:disabled{opacity:.45;cursor:default}
+.act:not(:disabled):active{transform:translateY(1px)}
+.actions__new{width:100%;height:36px;font-size:var(--fs-sm);line-height:var(--lh-20)}
+
+/* ══════════ tab history ══════════ */
+.history{
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-0);
+  width:calc(100% - 32px);max-width:398px;margin:16px auto 24px;padding:12px var(--sp-0);
+  background:var(--bg-surface);border-radius:16px;
+}
+.tabs{display:flex;width:100%;border-bottom:1px solid var(--border-secondary)}
+.tabs__tab{position:relative;flex:1 0 0;height:32px;padding-bottom:6px;
+  font-size:var(--fs-base);line-height:var(--lh-24);color:var(--text-secondary)}
+.tabs__tab.is-active{font-weight:700;color:var(--text-primary)}
+.tabs__tab::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:56px;height:3px;border-radius:2px;background:transparent}
+.tabs__tab.is-active::after{background:var(--bg-brand);box-shadow:0 0 8px rgba(255,200,0,.5)}
+
+/* component "empty state" (Property 1=empty · 366×133) — ใช้ทั้งเค้าไพ่และประวัติของฉันตอนยังไม่มีข้อมูล */
+.emptystate{box-sizing:border-box;position:relative;width:100%;height:133px;
+  background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--r-8)}
+/* ข้อความในกล่อง — เดิมกำหนดเป็น left 87 / right 88 / top 44 บนกรอบ 366 จึงคิดเป็น % ให้ย่อตามจอ */
+.emptystate__box{position:absolute;left:23.77%;right:24.04%;top:33.08%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:var(--sp-xs)}
+.emptystate__title{font-size:var(--fs-xs);line-height:var(--lh-18);text-align:center;color:#8B8D93}
+.emptystate__hint{font-size:var(--fs-2xs);line-height:var(--lh-14);text-align:center;color:#6F7176}
+
+.board{width:100%;height:133px;background:var(--bg-surface);border:1px solid var(--border-default);
+  overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.board::-webkit-scrollbar{display:none}
+.board__grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(6,22px);
+  grid-auto-columns:22px;height:100%;
+  /* กว้างตามจำนวนคอลัมน์จริง เส้นตารางจึงลากต่อไปถึงหน้าถัดไปที่เลื่อนไปดู
+     และอย่างน้อยเต็มความกว้างที่มองเห็นเสมอ แม้ยังมีผลไม่กี่รอบ */
+  width:max-content;min-width:100%;
+  background-image:linear-gradient(to right,var(--border-default) 1px,transparent 1px),
+                   linear-gradient(to bottom,var(--border-default) 1px,transparent 1px);
+  background-size:22px 22px}
+.board__grid i{display:block;width:16px;height:16px;margin:3px;border-radius:50%;
+  border:2.5px solid transparent}
+.board__grid i[data-r="even"]{border-color:var(--marker-even)}
+.board__grid i[data-r="odd"]{border-color:var(--marker-odd)}
+.board__grid i.is-new{animation:popIn .3s ease}
+
+.mine{width:100%;min-height:133px}
+.mine__list{display:flex;flex-direction:column;gap:var(--sp-xs)}
+
+/* การ์ดประวัติ — component "History bet" (Win / Lose / Waiting) 366×78 */
+.bethist{
+  box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-2xs);
+  width:100%;padding:12px;background:var(--bg-canvas);
+  border:1px solid var(--border-default);border-radius:12px;
+}
+.bethist.is-new{animation:popIn .3s ease}
+.bethist__row{display:flex;gap:var(--sp-xs);align-items:flex-start;width:100%;overflow:hidden}
+.bethist__time{display:flex;align-items:center;flex:0 0 auto;width:56px;height:34px;
+  font-size:var(--fs-xs);line-height:var(--lh-18);color:var(--text-primary);white-space:nowrap}
+.bethist__col{display:flex;flex-direction:column;gap:2px;flex:0 0 auto;width:64px;overflow:hidden}
+.bethist__col--amt{flex:1 0 0;min-width:0;text-align:right}
+.bethist__k{font-size:var(--fs-2xs);line-height:var(--lh-14);color:var(--text-secondary)}
+.bethist__v{font-size:var(--fs-xs);line-height:var(--lh-18);font-weight:600;color:var(--text-primary)}
+.bethist__v[data-side="even"]{color:var(--marker-even)}
+.bethist__v[data-side="odd"]{color:var(--marker-odd)}
+.bethist__v--muted,.bethist__k--muted{color:var(--text-secondary)}
+
+.bethist[data-state="win"] .bethist__col--amt .bethist__k,
+.bethist[data-state="win"] .bethist__col--amt .bethist__v{color:var(--text-success)}
+.bethist[data-state="lose"] .bethist__col--amt .bethist__k,
+.bethist[data-state="lose"] .bethist__col--amt .bethist__v{color:var(--text-error)}
+.bethist[data-state="waiting"] .bethist__col--amt .bethist__k{color:var(--text-primary)}
+.bethist[data-state="waiting"] .bethist__col--amt .bethist__v{color:var(--text-secondary)}
+
+.bethist__seed{display:flex;gap:var(--sp-xs);align-items:center;height:14px;width:100%;overflow:hidden}
+.bethist__date{flex:0 0 auto;font-size:var(--fs-2xs);line-height:var(--lh-14);
+  color:var(--text-default);white-space:nowrap}
+.bethist__sep{flex:0 0 auto;width:1px;height:8px;background:var(--border-secondary)}
+.bethist__code{flex:1 0 0;min-width:0;font-size:var(--fs-2xs);line-height:var(--lh-14);
+  color:var(--text-default);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ══════════ overlays ══════════ */
+.dim{position:absolute;inset:0;z-index:40;background:rgba(16,16,16,.6)}
+.dim[hidden]{display:none}
+
+/* sound popover */
+.sound{position:absolute;top:56px;right:16px;width:226px;padding:9px 13px;
+  background:var(--bg-surface);border:1px solid var(--border-default);border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);animation:popIn .18s ease}
+.sound__head{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 var(--sp-xs)}
+.sound__title{font-size:var(--fs-sm);line-height:21px;font-weight:600;color:var(--text-primary)}
+.sound__close{display:flex;width:24px;height:24px}
+.sound__close img{width:100%;height:100%;filter:grayscale(1) brightness(2.4)}
+.sound__row{display:flex;align-items:center;justify-content:space-between;height:38px;padding:0 var(--sp-xs);
+  cursor:pointer}
+.sound__row>span:first-child{font-size:var(--fs-xs);line-height:var(--lh-20);color:var(--text-primary)}
+.sound__row input{position:absolute;opacity:0;pointer-events:none}
+.switch{position:relative;width:38px;height:22px;border-radius:var(--r-round);
+  background:var(--bg-tertiary);transition:background .15s ease}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;
+  background:#fff;transition:transform .15s ease}
+.sound__row input:checked+.switch{background:var(--bg-brand)}
+.sound__row input:checked+.switch::after{transform:translateX(16px)}
+
+/* rules sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:82%;padding:16px 24px 24px;
+  display:flex;flex-direction:column;background:var(--bg-surface);
+  border-radius:16px 16px 0 0;animation:sheetUp .25s ease}
+@keyframes sheetUp{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+.sheet__grip{width:48px;height:4px;margin:0 auto 16px;border-radius:2px;background:var(--border-secondary)}
+.sheet__title{font-size:var(--fs-xl);line-height:26px;font-weight:700;color:var(--text-primary)}
+.sheet__body{flex:1 1 auto;margin:16px 0;padding-right:10px;overflow-y:auto;
+  font-size:var(--fs-xs);line-height:var(--lh-18);color:var(--text-muted)}
+.sheet__body h3{margin:16px 0 6px;font-size:var(--fs-sm);line-height:var(--lh-20);font-weight:700;
+  color:var(--text-brand)}
+.sheet__body p{margin-bottom:6px}
+.sheet__body ol{counter-reset:n}
+.sheet__body li{position:relative;margin-bottom:6px;padding-left:20px;counter-increment:n}
+.sheet__body li::before{content:counter(n) ".";position:absolute;left:0;color:var(--text-secondary)}
+.sheet__body::-webkit-scrollbar{width:3px}
+.sheet__body::-webkit-scrollbar-thumb{background:var(--border-secondary);border-radius:2px}
+.sheet__ok{height:36px}
+
+/* ══════════ ไข่ออกผล — bounce → shake → crack ══════════ */
+/* พิกัดไข่คิดเป็น % ของเวที (เดิมวัดจากรังในภาพจริงที่ 366×310: x 11/129/247 · y 171 · ไข่ 111) */
+.eggs{position:absolute;inset:0;pointer-events:none;
+  --egg-x0:3.005%;--egg-x1:35.246%;--egg-x2:67.486%;--egg-y:55.161%}
+.egg{
+  position:absolute;width:30.328%;aspect-ratio:1;
+  top:var(--egg-y);transform-origin:50% 92%;
+}
+.egg:nth-child(1){left:var(--egg-x0)}
+.egg:nth-child(2){left:var(--egg-x1)}
+.egg:nth-child(3){left:var(--egg-x2)}
+.egg__img{width:100%;height:100%;transform-origin:50% 92%}
+.egg__shadow{
+  position:absolute;left:50%;bottom:1.8%;width:68.5%;height:10.8%;margin-left:-34.25%;
+  border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.55),rgba(0,0,0,0) 72%);
+}
+
+/* 1 · เด้ง ดึ้ง ๆ */
+@keyframes eggHop{
+   0%{transform:translateY(0) scale(1,1) rotate(0)}
+  10%{transform:translateY(0) scale(1.14,.86) rotate(0)}
+  30%{transform:translateY(-24px) scale(.93,1.08) rotate(-4deg)}
+  50%{transform:translateY(-30px) scale(.96,1.04) rotate(3deg)}
+  72%{transform:translateY(0) scale(1.12,.88) rotate(0)}
+  86%{transform:translateY(-4px) scale(.98,1.02) rotate(0)}
+ 100%{transform:translateY(0) scale(1,1) rotate(0)}
+}
+@keyframes eggHopShadow{
+   0%,100%{transform:scaleX(1);opacity:.85}
+  10%{transform:scaleX(1.18);opacity:1}
+  40%{transform:scaleX(.55);opacity:.35}
+  72%{transform:scaleX(1.16);opacity:1}
+}
+.is-hop .egg__img{animation:eggHop var(--hop,620ms) cubic-bezier(.34,.8,.4,1) infinite}
+.is-hop .egg__shadow{animation:eggHopShadow var(--hop,620ms) cubic-bezier(.34,.8,.4,1) infinite}
+.egg:nth-child(2) .egg__img,.egg:nth-child(2) .egg__shadow{animation-delay:90ms}
+.egg:nth-child(3) .egg__img,.egg:nth-child(3) .egg__shadow{animation-delay:180ms}
+
+/* 2 · สั่นรัวก่อนแตก */
+@keyframes eggShiver{
+  0%,100%{transform:translate(0,-6px) rotate(0) scale(1.04,.98)}
+  25%{transform:translate(-3px,-8px) rotate(-3deg) scale(1.02,1)}
+  50%{transform:translate(3px,-6px) rotate(3deg) scale(1.05,.97)}
+  75%{transform:translate(-2px,-9px) rotate(-2deg) scale(1.03,.99)}
+}
+.is-shiver .egg__img{
+  animation:eggShiver 90ms linear infinite;
+  filter:drop-shadow(0 0 10px rgba(255,200,0,.75)) drop-shadow(0 0 22px rgba(255,200,0,.4));
+}
+.is-shiver .egg__shadow{animation:none;transform:scaleX(.8);opacity:.5}
+
+/* 3 · แตก */
+@keyframes eggCrack{
+   0%{transform:scale(.72) rotate(-8deg)}
+  45%{transform:scale(1.22) rotate(3deg)}
+  70%{transform:scale(.95) rotate(-1deg)}
+ 100%{transform:scale(1) rotate(0)}
+}
+.egg.is-cracked .egg__img{animation:eggCrack 420ms cubic-bezier(.2,1.5,.4,1) both;filter:none}
+.egg.is-cracked .egg__shadow{animation:none;transform:scaleX(1);opacity:.85}
+
+/* แสงวาบตอนแตก */
+.egg__flash{
+  position:absolute;left:50%;top:50%;width:135%;height:135%;margin:-67.5% 0 0 -67.5%;
+  border-radius:50%;opacity:0;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,214,0,.5) 38%,rgba(255,200,0,0) 70%);
+}
+@keyframes eggFlash{0%{opacity:0;transform:scale(.3)}25%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}
+.egg.is-cracked .egg__flash{animation:eggFlash 460ms ease-out both}

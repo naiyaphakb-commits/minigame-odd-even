@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>จับคู่เสียงพากย์ — Odd &amp; Even</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#101010;--surface:#18191b;--line:#2c2d30;--text:#fafafa;--muted:#7a7c85;--brand:#ffc800}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Thai',sans-serif;padding:24px 16px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+h1{font-size:20px;line-height:24px}
+p.lead{font-size:12px;line-height:18px;color:var(--muted)}
+input{flex:1;min-width:0;height:34px;font:inherit;color:var(--text);
+  background:#222325;border:1px solid var(--line);border-radius:6px;padding:0 8px}
+input::placeholder{color:#55575e}
+.row{display:flex;align-items:center;gap:8px;padding:10px 12px;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.row b{width:62px;font-size:14px}
+button{font:inherit;cursor:pointer;color:var(--text);background:#222325;
+  border:1px solid var(--line);border-radius:6px;height:34px;padding:0 12px}
+button:hover{border-color:var(--brand)}
+select{flex:1;min-width:0;height:34px;font:inherit;color:var(--text);
+  background:#222325;border:1px solid var(--line);border-radius:6px;padding:0 8px}
+.len{width:52px;font-size:12px;color:var(--muted);text-align:right}
+textarea{width:100%;height:150px;padding:10px;font:13px/1.5 ui-monospace,monospace;
+  color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.btn-brand{background:var(--brand);color:#101010;border:0;font-weight:700;height:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>จับคู่เสียงกับจุดที่ใช้ — ชุดที่ 2 (22 คลิป)</h1>
+  <p class="lead">กดฟังทีละคลิป เลือกว่าเป็นเสียงของจุดไหน (พิมพ์คำพูดไว้ด้วยก็ได้)
+  · เสร็จแล้วกด “สรุปผล” แล้วส่งข้อความที่ได้กลับมา เดี๋ยวผมวางเข้าเกมให้ครับ
+  · เพลงพื้นหลังยังเป็นตัวเดิม ไม่ถูกแทน</p>
+  <div id="list"></div>
+  <button class="btn-brand" id="sum" type="button">สรุปผล</button>
+  <textarea id="out" readonly placeholder="ผลการจับคู่จะขึ้นตรงนี้"></textarea>
+</div>
+<script>
+const KEYS = [
+  ['', '— ยังไม่ระบุ —'],
+  ['voice:roundStart', 'พากย์ · เปิดรอบเดิมพันใหม่'],
+  ['voice:hurry', 'พากย์ · ใกล้หมดเวลา'],
+  ['voice:confirm', 'พากย์ · กดยืนยันเดิมพัน'],
+  ['voice:place', 'พากย์ · วางชิพ'],
+  ['voice:cancel', 'พากย์ · ยกเลิกเดิมพัน'],
+  ['voice:win', 'พากย์ · ชนะ'],
+  ['voice:winStreak', 'พากย์ · ชนะติดกัน 3 ครั้ง'],
+  ['voice:lose', 'พากย์ · แพ้'],
+  ['voice:noBet', 'พากย์ · หมดเวลาแบบไม่ได้แทง'],
+  ['voice:lowCredit', 'พากย์ · เงินไม่พอ'],
+  ['voice:oneSide', 'พากย์ · แทงได้ฝั่งเดียว'],
+  ['voice:welcome', 'พากย์ · ต้อนรับตอนเข้าเกม'],
+  ['voice:crack', 'พากย์ · ตอนไข่แตกเฉลยผล'],
+  ['sfx:chip', 'เอฟเฟกต์ · แตะเลือกชิพ'],
+  ['sfx:place', 'เอฟเฟกต์ · วางชิพ'],
+  ['sfx:cancel', 'เอฟเฟกต์ · ยกเลิก'],
+  ['sfx:confirm', 'เอฟเฟกต์ · ยืนยัน'],
+  ['sfx:hop', 'เอฟเฟกต์ · ไข่เด้ง'],
+  ['sfx:crack', 'เอฟเฟกต์ · ไข่แตก'],
+  ['sfx:win', 'เอฟเฟกต์ · YOU WIN'],
+  ['sfx:lose', 'เอฟเฟกต์ · YOU LOSE'],
+  ['sfx:coin', 'เอฟเฟกต์ · เหรียญเข้ากระเป๋า'],
+  ['sfx:chipFall', 'เอฟเฟกต์ · เหรียญร่วงตอนแพ้'],
+  ['sfx:error', 'เอฟเฟกต์ · แจ้งเตือน'],
+  ['sfx:tab', 'เอฟเฟกต์ · สลับแท็บ'],
+  ['bgm', 'เพลงพื้นหลัง'],
+  ['skip', 'ไม่ใช้คลิปนี้'],
+];
+const SET = 'assets/audio/clips-02';
+const COUNT = 22;
+const list = document.getElementById('list');
+let playing = null;
+for (let i = 1; i <= COUNT; i++) {
+  const id = String(i).padStart(2, '0');
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML =
+    `<b>clip ${id}</b>` +
+    `<button type="button" data-play="${id}">▶ ฟัง</button>` +
+    `<span class="len" id="len-${id}">–</span>` +
+    `<select data-clip="${id}">${KEYS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select>` +
+    `<input data-said="${id}" placeholder="พูดว่าอะไร (ไม่ใส่ก็ได้)">`;
+  list.appendChild(row);
+  const a = new Audio(`${SET}/clip-${id}.wav`);
+  a.addEventListener('loadedmetadata', () => {
+    document.getElementById(`len-${id}`).textContent = a.duration.toFixed(2) + 's';
+  });
+  row.querySelector('[data-play]').addEventListener('click', () => {
+    if (playing && playing !== a) { playing.pause(); playing.currentTime = 0; }
+    playing = a; a.currentTime = 0; a.play();
+  });
+}
+document.getElementById('sum').addEventListener('click', () => {
+  const lines = [...document.querySelectorAll('select')].map(s => {
+    const said = document.querySelector(`[data-said="${s.dataset.clip}"]`).value.trim();
+    return `clip-${s.dataset.clip} = ${s.value || '?'}${said ? '   // ' + said : ''}`;
+  });
+  document.getElementById('out').value = lines.join('\n');
+  document.getElementById('out').select();
+});
+</script>
+</body>
+</html>

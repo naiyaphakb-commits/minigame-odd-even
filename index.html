@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Odd &amp; Even — Minigame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=10">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ══ Header ══ -->
+  <header class="hdr">
+    <img class="hdr__logo" src="assets/img/logo.png" alt="Odd &amp; Even">
+    <div class="hdr__right">
+      <div class="balance">
+        <span class="balance__icon"><img src="assets/icon/baht.svg" alt=""></span>
+        <span class="balance__value">
+          <span id="bal-int">21,525</span><span class="balance__dec" id="bal-dec">.56</span>
+        </span>
+      </div>
+      <button class="icon-btn" id="btn-rules" type="button" aria-label="กติกาการเล่น">
+        <svg class="icon-btn__glyph" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="9" cy="9" r="7.4" stroke="#fafafa" stroke-width="1.5"/>
+          <path d="M6.9 6.9a2.1 2.1 0 1 1 2.6 2.04c-.34.1-.5.4-.5.75v.6" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="9" cy="12.8" r=".95" fill="#fafafa"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btn-sound" type="button" aria-label="การตั้งค่าเสียง">
+        <img class="icon-btn__img" src="assets/icon/sound.svg" alt="">
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ 1. Loading ══ -->
+  <section class="screen screen--loading is-active" id="screen-loading">
+    <img class="loading__bg" src="assets/img/loading-bg.png" alt="">
+    <div class="loading__foot">
+      <div class="loadbar" id="loadbar">
+        <div class="loadbar__row">
+          <span class="loadbar__label">Loading...</span>
+          <span class="loadbar__pct" id="load-pct">0%</span>
+        </div>
+        <div class="loadbar__track">
+          <div class="loadbar__fill" id="load-fill"></div>
+          <div class="loadbar__mascot" id="load-mascot"><img src="assets/img/loading-mascot.png" alt=""></div>
+        </div>
+      </div>
+      <button class="btn-brand loading__start" id="btn-start" type="button" hidden>เริ่มเกม</button>
+    </div>
+  </section>
+
+  <!-- ══ 2–7. Game ══ -->
+  <section class="screen screen--game" id="screen-game">
+
+    <div class="frame">
+      <!-- Fairness panel -->
+      <div class="fair" id="fair">
+        <button class="fair__head" id="fair-toggle" type="button" aria-expanded="false">
+          <div class="fair__title">
+            <span class="fair__key">Private Key</span>
+            <span class="fair__hint">จดจำโค้ด 3ตัวท้าย</span>
+          </div>
+          <span class="pill pill--wait" id="fair-status">
+            <img class="pill__dot" src="assets/icon/dot.svg" alt=""><span id="fair-status-text">รอออกผล</span>
+          </span>
+          <img class="fair__chevron" src="assets/icon/chevron.svg" alt="">
+        </button>
+        <div class="fair__value">
+          <p class="fair__seed" id="fair-seed">•••••••••••••••••••••••••••••••••••••••••ZXC</p>
+          <button class="fair__copy" type="button" data-copy="#fair-seed" aria-label="คัดลอก">
+            <img src="assets/icon/copy.svg" alt="">
+          </button>
+        </div>
+        <div class="fair__body" id="fair-body" hidden>
+          <div class="fair__label">
+            <span class="fair__key">Early Announced Hash</span>
+            <span class="fair__hint">ประกาศก่อนเดิมพัน</span>
+          </div>
+          <div class="fair__value">
+            <p class="fair__seed" id="fair-hash">—</p>
+            <button class="fair__copy" type="button" data-copy="#fair-hash" aria-label="คัดลอก">
+              <img src="assets/icon/copy.svg" alt="">
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage -->
+      <div class="stage" id="stage">
+        <img class="stage__layer is-on" id="stage-board" src="assets/img/stage-eggless.png" alt="">
+        <div class="eggs" id="eggs"></div>
+        <div class="stage__pop" id="stage-pop">
+          <img id="pop-art" src="assets/img/stage-win.png" alt="">
+          <span class="pop__amount" id="pop-amount">
+            <img src="assets/icon/baht.svg" alt=""><b>+0.00</b>
+          </span>
+        </div>
+        <!-- inline error · 1.5s -->
+        <div class="inline-error" id="inline-error">
+          <img src="assets/icon/cancel.svg" alt="">
+          <span id="inline-error-text">แทงได้ฝั่งเดียว · กดยกเลิกถ้าจะเปลี่ยนฝั่ง</span>
+        </div>
+        <!-- hint pill -->
+        <div class="timer" id="timer" hidden><span class="timer__dot"></span><span id="timer-num">30</span> วิ</div>
+        <div class="hint" id="hint">เลือกจำนวนเงินแล้วเลือกฝั่ง</div>
+      </div>
+
+      <!-- tab bet -->
+      <div class="tabbet">
+        <!-- bar chip -->
+        <div class="barchip">
+          <button class="chip chip--side" id="chip-allin" type="button" data-value="allin">
+            <img src="assets/chip/a-allin.png" alt="ALL IN">
+          </button>
+          <div class="barchip__track">
+            <div class="barchip__rail" id="chip-rail"></div>
+            <button class="barchip__nav barchip__nav--prev" type="button" aria-label="ก่อนหน้า">
+              <img src="assets/icon/arrow.svg" alt="">
+            </button>
+            <button class="barchip__nav barchip__nav--next" type="button" aria-label="ถัดไป">
+              <img src="assets/icon/arrow.svg" alt="">
+            </button>
+          </div>
+          <button class="chip chip--side" id="chip-max" type="button" data-value="max">
+            <img src="assets/chip/a-max.png" alt="MAX">
+          </button>
+        </div>
+
+        <!-- bet bar -->
+        <div class="betbar">
+          <button class="betcard betcard--even" id="bet-even" type="button" data-side="even">
+            <span class="betcard__body">
+              <span class="betcard__title">คู่</span>
+              <span class="betcard__sub">ตัวเลข : 0,2,4,6,8</span>
+            </span>
+            <span class="betcard__tag">คุณเลือก</span>
+            <span class="betcard__chip"></span>
+          </button>
+          <button class="betcard betcard--odd" id="bet-odd" type="button" data-side="odd">
+            <span class="betcard__body">
+              <span class="betcard__title">คี่</span>
+              <span class="betcard__sub">ตัวเลข : 1,3,5,7,9</span>
+            </span>
+            <span class="betcard__tag">คุณเลือก</span>
+            <span class="betcard__chip"></span>
+          </button>
+        </div>
+
+        <!-- range labels -->
+        <div class="ranges">
+          <span class="ranges__item">เดิมพัน<b id="sum-bet">฿ 0.00</b></span>
+          <span class="ranges__item">ชนะได้รับ<b id="sum-win">฿ 0.00</b></span>
+        </div>
+
+        <!-- actions -->
+        <div class="actions" id="actions">
+          <div class="actions__group">
+            <button class="act act--cancel" id="btn-cancel" type="button" disabled>
+              <img src="assets/icon/cancel.svg" alt=""><span>ยกเลิก</span>
+            </button>
+            <button class="act act--repeat" id="btn-repeat" type="button" disabled>
+              <img src="assets/icon/refresh.svg" alt=""><span>แทงซ้ำ</span>
+            </button>
+          </div>
+          <button class="act act--confirm" id="btn-confirm" type="button" disabled>ยืนยันเดิมพัน</button>
+        </div>
+        <button class="btn-brand actions__new" id="btn-newround" type="button" hidden>เริ่มเดิมพันรอบใหม่</button>
+      </div>
+    </div>
+
+    <!-- tab history -->
+    <div class="history" id="history">
+      <div class="tabs">
+        <button class="tabs__tab is-active" type="button" data-tab="board">กระดานผล</button>
+        <button class="tabs__tab" type="button" data-tab="mine">ประวัติของฉัน</button>
+      </div>
+      <div class="emptystate" id="board-empty">
+        <div class="emptystate__box">
+          <p class="emptystate__title">ยังไม่มีผลเค้าไพ่</p>
+          <p class="emptystate__hint">ผลคู่-คี่จะเริ่มบันทึกหลังจบรอบแรก</p>
+        </div>
+      </div>
+      <div class="board" id="panel-board" hidden><div class="board__grid" id="board-grid"></div></div>
+      <div class="mine" id="panel-mine" hidden>
+        <div class="emptystate" id="mine-empty">
+          <div class="emptystate__box">
+            <p class="emptystate__title">ยังไม่มีประวัติการเดิมพัน</p>
+            <p class="emptystate__hint">เริ่มเดิมพันรอบแรกเพื่อดูประวัติที่นี่</p>
+          </div>
+        </div>
+        <ul class="mine__list" id="mine-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 8. Sound settings ══ -->
+  <div class="dim" id="dim-sound" hidden>
+    <div class="sound" role="dialog" aria-label="การตั้งค่าเสียง">
+      <div class="sound__head">
+        <span class="sound__title">การตั้งค่าเสียง</span>
+        <button class="sound__close" id="btn-sound-close" type="button" aria-label="ปิด">
+          <img src="assets/icon/cancel.svg" alt="">
+        </button>
+      </div>
+      <label class="sound__row">
+        <span>เสียงเอฟเฟกต์</span>
+        <input type="checkbox" id="sw-fx" checked><span class="switch"></span>
+      </label>
+      <label class="sound__row">
+        <span>เสียงพื้นหลัง</span>
+        <input type="checkbox" id="sw-bgm" checked><span class="switch"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ══ 9. Rules ══ -->
+  <div class="dim" id="dim-rules" hidden>
+    <div class="sheet" role="dialog" aria-label="กติกาการเล่น">
+      <div class="sheet__grip"></div>
+      <h2 class="sheet__title">กติกาการเล่น</h2>
+      <div class="sheet__body">
+        <p>เกมคู่คี่ผู้เล่นเดิมพันว่าผลรวมตัวเลขจากไข่ทั้ง 3 ใบจะออกเป็น เลขคู่ หรือ เลขคี่ เกมนี้เล่นคนเดียว ไม่มีการปะทะกับผู้เล่นอื่น ทุกรอบจบภายในไม่กี่วินาที และทุกผลลัพธ์สามารถตรวจสอบย้อนหลังได้ว่าไม่มีการโกงเกิดขึ้น</p>
+        <h3>วิธีเล่น</h3>
+        <ol>
+          <li>เลือกจำนวนเงินเดิมพันจากชิพที่กำหนด (10 / 20 / 50 / 100 / 500 / ALL IN) หรือกำหนดเองในช่วงที่อนุญาต</li>
+          <li>แตะเลือกฝั่งที่ต้องการทาย — คู่ หรือ คี่</li>
+          <li>กด “ยืนยันเดิมพัน” เพื่อวางเดิมพัน — ณ จุดนี้ระบบจะตัดเครดิตทันที และเปิดเผยผลในเสี้ยววินาทีถัดไป</li>
+          <li>ไข่ทั้ง 3 ใบจะแตกออกพร้อมกัน แต่ละใบแสดงตัวเลข 0–9</li>
+          <li>นำตัวเลขทั้ง 3 ใบมาบวกกัน ได้ผลรวมในช่วง 0–99</li>
+          <li>หากผลรวมตรงกับฝั่งที่ทายไว้ ถือว่า ชนะ และได้รับเงินคืนตามอัตราจ่าย ถือว่า แพ้ และเสียเงินเดิมพันที่วางไป</li>
+        </ol>
+        <h3>อัตราจ่าย</h3>
+        <p>โอกาสออกเลขคู่และเลขคี่เท่ากันพอดีที่ 50% ต่อ 50% ไม่มีฝั่งใดได้เปรียบ ทายถูกได้รับเงินคืน 1.95 เท่า ของยอดเงินเดิมพัน (เช่น เดิมพัน 100 บาท ชนะรับ 195 บาท)</p>
+        <h3>เค้าไพ่และประวัติการเล่น</h3>
+        <p>เค้าไพ่ แสดงผลลัพธ์ (คู่/คี่) ของรอบก่อนหน้าเรียงตามลำดับ ใช้เป็นข้อมูลอ้างอิงเท่านั้น ไม่สามารถใช้ทำนายผลรอบถัดไปได้ เนื่องจากทุกรอบเป็นการสุ่มอิสระ ประวัติการเดิมพันของฉัน แสดงรายการที่ผู้เล่นเดิมพันไปแล้ว พร้อมผลแพ้/ชนะและยอดได้เสียของแต่ละรอบ</p>
+        <h3>ระบบตรวจสอบความยุติธรรม (Provably Fair)</h3>
+        <p>เกมนี้ใช้ระบบพิสูจน์ความยุติธรรมที่ผู้เล่นตรวจสอบได้ด้วยตนเอง เพื่อยืนยันว่าไม่มีการกำหนดผลล่วงหน้าเพื่อเอาเปรียบผู้เล่น ก่อนวางเดิมพันทุกรอบ ระบบจะสร้างผลลัพธ์ไว้ล่วงหน้าและประกาศเป็นรหัสแฮช (Early Announced Hash) ให้ผู้เล่นเห็นทันที ค่านี้ไม่สามารถเปลี่ยนแปลงได้อีกหลังประกาศ เมื่อจบรอบ ระบบจะเปิดเผยคีย์ต้นทาง (Private Key / Server Seed) ที่ใช้สร้างผลลัพธ์ สามารถดูข้อมูลนี้ได้ที่พาเนล “Private Key” ด้านบนของหน้าเกมทุกรอบ</p>
+        <h3>เสียง</h3>
+        <p>ปิด-เปิดได้ที่ปุ่มลำโพงมุมขวาบน แยกเป็นเสียงเอฟเฟกต์กับเสียงพื้นหลัง ค่าที่ตั้งไว้จะถูกจำไว้ในเครื่องของคุณ</p>
+      </div>
+      <button class="btn-brand sheet__ok" id="btn-rules-ok" type="button">เข้าใจแล้ว</button>
+    </div>
+  </div>
+
+</div>
+<script src="js/sfx.js?v=10"></script>
+<script src="js/egg-reveal.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>

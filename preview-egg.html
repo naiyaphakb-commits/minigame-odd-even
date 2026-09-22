@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egg reveal — preview</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body{display:flex;justify-content:center;padding:24px 0;background:var(--bg-canvas)}
+  .pv{width:398px}
+  .pv__stage{
+    position:relative;width:366px;height:310px;margin:0 auto;border-radius:var(--r-8);
+    background:#2a1b12 radial-gradient(120% 90% at 50% 20%,#4a2f1e,#1b1109 70%);
+    box-shadow:0 3px 6px rgba(0,0,0,.25);overflow:hidden;
+  }
+  .pv__note{
+    position:absolute;left:0;right:0;top:10px;text-align:center;
+    font-size:var(--fs-2xs);color:var(--text-default);
+  }
+  .pv__out{
+    margin:16px auto 0;padding:12px 16px;width:366px;border-radius:var(--r-8);
+    background:var(--bg-surface);border:1px solid var(--border-default);
+    font-size:var(--fs-sm);line-height:var(--lh-20);color:var(--text-secondary);
+  }
+  .pv__out b{color:var(--text-brand);font-weight:700}
+  .pv__out .side{color:var(--text-primary);font-weight:600}
+  .pv__bar{display:flex;gap:var(--sp-xs);width:366px;margin:12px auto 0}
+  .pv__bar .btn-brand{flex:1 0 0;height:40px}
+  .pv__bar button.alt{
+    height:40px;padding:0 14px;border-radius:var(--r-8);
+    background:var(--bg-default);color:var(--text-primary);
+    font-size:var(--fs-sm);font-weight:600;
+  }
+</style>
+</head>
+<body>
+<div class="pv">
+  <div class="pv__stage">
+    <p class="pv__note">พื้นหลังชั่วคราว — รอไฟล์เวทีที่เอาไข่ออก</p>
+    <div class="eggs" id="eggs"></div>
+  </div>
+
+  <div class="pv__bar">
+    <button class="btn-brand" id="play" type="button">เล่นอนิเมชั่น</button>
+    <button class="alt" id="force" type="button">ทดสอบเลข 2 หลัก</button>
+  </div>
+
+  <div class="pv__out" id="out">กดปุ่มเพื่อเล่นอนิเมชั่น · รวม 5.48 วินาที</div>
+</div>
+
+<script src="js/egg-reveal.js"></script>
+<script>
+const host = document.getElementById('eggs');
+const out  = document.getElementById('out');
+EggReveal.mountEggs(host);
+
+let busy = false;
+async function run(eggs) {
+  if (busy) return;
+  busy = true;
+  out.textContent = 'กำลังออกผล…';
+  const t0 = performance.now();
+  const r = await EggReveal.playReveal(host, eggs);
+  const side = r.sum % 2 === 0 ? 'คู่' : 'คี่';
+  out.innerHTML =
+    `${r.eggs.join(' + ')} = <b>${r.sum}</b> · <span class="side">${side}</span>` +
+    ` &nbsp;—&nbsp; ใช้เวลา ${Math.round(performance.now() - t0)} ms`;
+  busy = false;
+}
+document.getElementById('play').addEventListener('click', () => run());
+document.getElementById('force').addEventListener('click', () => run([47, 28, 24]));
+</script>
+</body>
+</html>
