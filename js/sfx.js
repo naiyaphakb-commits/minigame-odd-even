@@ -46,14 +46,28 @@ const on = { fx: true, bgm: true };
 const buffers = {};                  // เก็บไฟล์ที่โหลดแล้ว
 let bgmEl = null;
 
-/* โหลดไฟล์เสียงล่วงหน้า */
+/* โหลดไฟล์เสียงล่วงหน้า — รองรับทั้ง path ปกติและ data URI (ไฟล์ standalone)
+   data URI ถอดเองไม่ผ่าน fetch เพราะบางเบราว์เซอร์บล็อก fetch ตอนเปิดจาก file:// */
+function dataToBuffer(url) {
+  const b64 = url.slice(url.indexOf(',') + 1);
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr.buffer;
+}
 async function loadFile(name, url) {
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(res.status);
-    buffers[name] = await ac().decodeAudioData(await res.arrayBuffer());
+    let raw;
+    if (String(url).startsWith('data:')) {
+      raw = dataToBuffer(url);
+    } else {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(res.status);
+      raw = await res.arrayBuffer();
+    }
+    buffers[name] = await ac().decodeAudioData(raw);
   } catch (e) {
-    console.warn(`[sfx] โหลด ${url} ไม่สำเร็จ — ใช้เสียงสังเคราะห์แทน`);
+    console.warn(`[sfx] โหลดเสียง ${name} ไม่สำเร็จ — ใช้เสียงสังเคราะห์แทน`, e);
   }
 }
 function playFile(name) {
@@ -381,6 +395,13 @@ function say(name) {
 function stopVoice() {
   if (voiceEl) { voiceEl.pause(); voiceEl.currentTime = 0; voiceEl = null; }
 }
+
+/* บางเบราว์เซอร์ (โดยเฉพาะตอนเปิดไฟล์ตรง ๆ) พัก AudioContext ไว้
+   ปลุกซ้ำทุกครั้งที่ผู้ใช้แตะ/คลิก จะได้ไม่เงียบไปทั้งเกม */
+['pointerdown', 'touchstart', 'keydown'].forEach(ev =>
+  document.addEventListener(ev, () => {
+    try { if (ctx && ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+  }, { passive: true }));
 
 window.Sfx = {
   /* เสียงพากย์ — ใช้สวิตช์เดียวกับเสียงเอฟเฟกต์ */

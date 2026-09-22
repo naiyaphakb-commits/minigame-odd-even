@@ -520,6 +520,11 @@ $$('.tabs__tab').forEach(t => t.addEventListener('click', () => {
 /* ══════════ 8. ตั้งค่าเสียง ══════════ */
 const dimSound = $('#dim-sound');
 $('#btn-sound').addEventListener('click', () => { dimSound.hidden = false; Sfx.play('tab'); });
+/* เบราว์เซอร์จำสถานะ checkbox ข้ามการรีเฟรชได้ ถ้าไม่รีเซ็ตให้ตรงกับค่าเริ่มต้น
+   ผู้เล่นอาจเจอหน้าเงียบทั้งที่ยังไม่ได้ปิดเสียงเอง */
+$('#sw-fx').checked = true;
+$('#sw-bgm').checked = true;
+
 $('#sw-fx').addEventListener('change',  e => Sfx.setFx(e.target.checked));
 $('#sw-bgm').addEventListener('change', e => Sfx.setBgm(e.target.checked));
 $('#btn-sound-close').addEventListener('click', () => { dimSound.hidden = true; });
